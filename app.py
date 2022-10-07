@@ -3,10 +3,10 @@ import os
 import psycopg2
 from dotenv import load_dotenv
 from flask import Flask, request, Blueprint
-from supabase import create_client, Client
+
+# from supabase import create_client, Client
 
 
-url: str = os.environ.get("SUPABASE_URL")
 # key: str = os.environ.get("SUPABASE_KEY")
 
 # supabase: Client = create_client(url, key)
@@ -15,6 +15,7 @@ load_dotenv()  # loads variables from .env file into environment
 
 bp = Blueprint("blog", __name__)
 app = Flask(__name__)
+url: str = os.environ.get("SUPABASE_URL")
 # url = os.environ.get("DATABASE_URL")  # gets variables from environment
 connection = psycopg2.connect(url)
 
@@ -35,7 +36,7 @@ def create_room():
                 cursor.execute(
                     f"INSERT INTO rooms (name) VALUES ('{name}') RETURNING id;", (name,)
                 )
-    else:
+    elif request.method == "GET":
         with connection:
             with connection.cursor() as cursor:
                 cursor.execute("SELECT * FROM rooms")
